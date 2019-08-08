@@ -15,14 +15,14 @@ class TableMotor extends Migration
     {
         Schema::create('Motor', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('motor_kode', 10);
+            $table->string('motor_kode');
             $table->string('motor_merk');
             $table->string('motor_type');
             $table->string('motor_warna_pilihan');
             $table->double('motor_harga');
-            $table->longblob('motor_gambar');
+            $table->binary('motor_gambar');
             $table->timestamps();
-            $table->primary('motor_kode');
+
         });
     }
 

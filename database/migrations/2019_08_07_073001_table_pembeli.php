@@ -18,7 +18,7 @@ class TablePembeli extends Migration
             $table->string('pembeli_no_ktp');
             $table->string('pembeli_nama');
             $table->string('pembeli_alamat');
-            $table->integer('pembeli_alamat');
+            $table->integer('pembeli_telepon');
             $table->integer('pembeli_hp');
             $table->timestamps();
         });
