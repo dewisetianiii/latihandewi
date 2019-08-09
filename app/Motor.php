@@ -13,4 +13,7 @@ class Motor extends Model
     public function beli_kridit(){
         return $this->belongTo('App\Beli_kridit', 'motor_kode');
     }
+    public function beli_cash(){
+        return $this->hasMany('App\Beli_cash', 'motor_kode');
+    }
 }
