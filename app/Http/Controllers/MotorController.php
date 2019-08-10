@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
-use App\Role;
-use Hash;
+use App\Motor;
+use Session;
+use Auth;
 
-class UserController extends Controller
+class MotorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,13 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::all();
-        $response = [
-            'succes' => true,
-            'data' => $user,
-            'message' => 'Berhasil'
-        ];
-        return response()->json($request, 200);
+        $motor = Motor::orderBy('created_at', 'desc')->get();
+        return view('admin.motor.index', compact('motor'));
     }
 
     /**
@@ -32,7 +27,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $motor = Motor::all();
+        return view('admin.motor.create');
     }
 
     /**
@@ -43,16 +39,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        $role = Role::where('name', 'admin')->first();
-        $user->attachRole($role);
-
-        return response()->json('berhasil');
+        $kategori = new kategori();
+        $kategori->nama_kategori = $request->nama_kategori;
+        $kategori->slug = str_slug($request->nama_kategori, '-');
+        $kategori->save();
+        Session::flash("flash_notification", [
+            "level" => "success",
+            "message" => "Berhasil menyimpan kategori <b>$kategori->nama_kategori</b>!"
+        ]);
+        return redirect()->route('kategori.index');
     }
 
     /**
