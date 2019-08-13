@@ -45,9 +45,9 @@ class MotorController extends Controller
         $kategori->save();
         Session::flash("flash_notification", [
             "level" => "success",
-            "message" => "Berhasil menyimpan kategori <b>$kategori->nama_kategori</b>!"
+            "message" => "Berhasil menyimpan kategori <b>$motor->nama_kategori</b>!"
         ]);
-        return redirect()->route('kategori.index');
+        return redirect()->route('motor.index');
     }
 
     /**
