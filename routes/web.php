@@ -20,10 +20,17 @@ Auth::routes(['register' => false]);
 Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['prefix' => 'backend', 'middleware' => ['auth', 'role:admin']], function(){
     Route::get('/', function(){
-        return 'halo';
+        return 'halo admin';
+    });
+    Route::get('/member', function(){
+        return 'hallo Member';
     });
     Route::resource('user', 'UserController');
+
+    Route::resource('motor', 'MotorController');
 });
+
+    
 
 Auth::routes();
 

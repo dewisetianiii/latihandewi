@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Motor;
-use Session;
-use Auth;
 
 class MotorController extends Controller
 {
@@ -16,8 +14,8 @@ class MotorController extends Controller
      */
     public function index()
     {
-        $motor = Motor::orderBy('created_at', 'desc')->get();
-        return view('admin.motor.index', compact('motor'));
+        $motor = Motor::all();
+        return view('backend.motor.index', compact('motor'));
     }
 
     /**
@@ -28,7 +26,7 @@ class MotorController extends Controller
     public function create()
     {
         $motor = Motor::all();
-        return view('admin.motor.create');
+        return view('backend.motor.create', compact('motor'));
     }
 
     /**
@@ -39,15 +37,16 @@ class MotorController extends Controller
      */
     public function store(Request $request)
     {
-        $kategori = new kategori();
-        $kategori->nama_kategori = $request->nama_kategori;
-        $kategori->slug = str_slug($request->nama_kategori, '-');
-        $kategori->save();
-        Session::flash("flash_notification", [
-            "level" => "success",
-            "message" => "Berhasil menyimpan kategori <b>$motor->nama_kategori</b>!"
-        ]);
+        $motor = new Motor();
+        $motor->motor_kode = $request->motor_kode;
+        $motor->motor_merk = $request->motor_merk;
+        $motor->motor_type = $request->motor_type;
+        $motor->motor_warna_pilihan = $request->motor_warna_pilihan;
+        $motor->motor_harga = $request->motor_harga;
+        $motor->motor_gambar = $request->motor_gambar;
+        $motor->save();
         return redirect()->route('motor.index');
+
     }
 
     /**
@@ -58,7 +57,8 @@ class MotorController extends Controller
      */
     public function show($id)
     {
-        //
+        $motor = Motor::findOrFail($id);
+        return view('motor.show', compact('motor'));
     }
 
     /**
@@ -69,7 +69,8 @@ class MotorController extends Controller
      */
     public function edit($id)
     {
-        //
+        $motor = Motor::findOrFail($id);
+        return view('motor.edit', compact('motor'));
     }
 
     /**
@@ -81,7 +82,15 @@ class MotorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $motor = Motor::findOrFail($id);
+        $motor->motor_kode = $request->motor_kode;
+        $motor->motor_merk = $request->motor_merk;
+        $motor->motor_type = $request->motor_type;
+        $motor->motor_warna_pilihan = $request->motor_warna_pilihan;
+        $motor->motor_harga = $request->motor_harga;
+        $motor->motor_gambar = $request->motor_gambar;
+        $motor->save();
+        return redirect()->route('motor.index');
     }
 
     /**
@@ -92,6 +101,8 @@ class MotorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $motor = Motor::findOrFail($id);
+        $motor->delete();
+        return redirect()->route('motor.index');
     }
 }
