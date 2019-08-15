@@ -20,7 +20,7 @@ class TableMotor extends Migration
             $table->string('motor_type');
             $table->string('motor_warna_pilihan');
             $table->double('motor_harga');
-            $table->binary('motor_gambar');
+            $table->string('motor_gambar');
             $table->timestamps();
 
         });

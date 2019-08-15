@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Motor;
+use Session;
+use Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Queue\Jobs\SyncJob;
 
 class MotorController extends Controller
 {
@@ -44,7 +48,16 @@ class MotorController extends Controller
         $motor->motor_warna_pilihan = $request->motor_warna_pilihan;
         $motor->motor_harga = $request->motor_harga;
         $motor->motor_gambar = $request->motor_gambar;
-        $motor->save();
+
+        if ($request->hasFile('motor_gambar')) {
+            $file = $request->file('motor_gambar');
+            $destinationPath = public_path() . '/assets/img/motor/';
+            $filename = str_random(6) . '_' . $file->getClientOriginalName();
+            $uploadSuccess = $file->move($destinationPath, $filename);
+            $motor->motor_gambar = $filename;
+    }
+    $motor->save();
+
         return redirect()->route('motor.index');
 
     }
@@ -70,7 +83,7 @@ class MotorController extends Controller
     public function edit($id)
     {
         $motor = Motor::findOrFail($id);
-        return view('motor.edit', compact('motor'));
+        return view('backend.motor.edit', compact('motor'));
     }
 
     /**
@@ -89,7 +102,22 @@ class MotorController extends Controller
         $motor->motor_warna_pilihan = $request->motor_warna_pilihan;
         $motor->motor_harga = $request->motor_harga;
         $motor->motor_gambar = $request->motor_gambar;
-        $motor->save();
+
+        if ($request->hasFile('motor_gambar')) {
+            $file = $request->file('motor_gambar');
+            $destinationPath = public_path() . '/assets/img/motor/';
+            $filename = str_random(6) . '_' . '/assets/img/motor/';
+            $upload = $file->move($destinationPath, $filename);
+        
+        if ($motor->motor_gambar) {
+            $old_foto = $motor->motor_gambar;
+            $filepath = public_path() . '/assets/img/motor/' . $motor->motor_gambar;
+            try {
+                File::delete($filepath);
+            }catch (FileNotFoundException $e) { }
+        }
+    }
+    $motor->save();
         return redirect()->route('motor.index');
     }
 
@@ -101,6 +129,16 @@ class MotorController extends Controller
      */
     public function destroy($id)
     {
+
+        $motor = Motor::findOrFail($id);
+        if ($motor->motor_gambar) {
+            $old_foto = $motor->motor_gambar;
+            $filepath = public_path() . '/assets/img/motor/' . $motor->motor_gambar;
+            try {
+                File::delete($filepath);
+            } catch (FileNotFoundException $e) { }
+        }
+
         $motor = Motor::findOrFail($id);
         $motor->delete();
         return redirect()->route('motor.index');
