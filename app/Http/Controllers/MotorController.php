@@ -7,7 +7,7 @@ use App\Motor;
 use Session;
 use Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Queue\Jobs\SyncJob;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class MotorController extends Controller
 {
@@ -51,11 +51,11 @@ class MotorController extends Controller
 
         if ($request->hasFile('motor_gambar')) {
             $file = $request->file('motor_gambar');
-            $destinationPath = public_path() . '/assets/img/motor/';
+            $Path = public_path() . '/assets/img/motor/';
             $filename = str_random(6) . '_' . $file->getClientOriginalName();
-            $uploadSuccess = $file->move($destinationPath, $filename);
+            $upload = $file->move($Path, $filename);
             $motor->motor_gambar = $filename;
-    }
+        }
     $motor->save();
 
         return redirect()->route('motor.index');
@@ -71,7 +71,7 @@ class MotorController extends Controller
     public function show($id)
     {
         $motor = Motor::findOrFail($id);
-        return view('motor.show', compact('motor'));
+        return view('backend.motor.show', compact('motor'));
     }
 
     /**
@@ -105,18 +105,28 @@ class MotorController extends Controller
 
         if ($request->hasFile('motor_gambar')) {
             $file = $request->file('motor_gambar');
-            $destinationPath = public_path() . '/assets/img/motor/';
-            $filename = str_random(6) . '_' . '/assets/img/motor/';
-            $upload = $file->move($destinationPath, $filename);
-        
-        if ($motor->motor_gambar) {
-            $old_foto = $motor->motor_gambar;
-            $filepath = public_path() . '/assets/img/motor/' . $motor->motor_gambar;
-            try {
-                File::delete($filepath);
-            }catch (FileNotFoundException $e) { }
+            $Path = public_path() . '/assets/img/motor/';
+            $filename = str_random(6) . '_' . $file->getClientOriginalName();
+            $upload = $file->move($Path, $filename);
+
+            if ($motor->motor_gambar) {
+                $old_foto = $motor->motor_gambar;
+                $filepath = public_path() . '/assets/img/motor/' . $motor->motor_gambar;
+                try {
+                    File::delete($filepath);
+                }catch (FileNotFoundException $e) { }
+            }
+            $motor->motor_gambar = $filename;
         }
-    }
+        // if ($motor->motor_gambar) {
+        //     $old_foto = $motor->motor_gambar;
+        //     $filepath = public_path() . '/assets/img/motor/' . $motor->motor_gambar;
+        //     try {
+        //         File::delete($filepath);
+        //     }catch (FileNotFoundException $e) { }
+        // }
+        // $motor->motor_gambar = $filename;
+    
     $motor->save();
         return redirect()->route('motor.index');
     }

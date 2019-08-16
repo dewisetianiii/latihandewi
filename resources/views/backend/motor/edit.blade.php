@@ -32,8 +32,8 @@
     </div>
     <div class="form-group">
         <label for="">Gambar Motor</label><br>
-        <img src="{{ asset('assets/img/motor/'.$motor->foto) }}" alt="" height="250px" width="250px">
-        <input type="file" class="form-control" name="foto">
+        <img src="{{ asset('assets/img/motor/'.$motor->motor_gambar) }}" alt="" height="250px" width="250px">
+        <input type="file" class="form-control" name="motor_gambar">
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-outline-info">
@@ -41,7 +41,7 @@
         </button>
     </div>
     <div class="form-group">
-        <a href="{{ url('/admin/motor') }}" class="btn btn-outline-info">Kembali</a>
+        <a href="{{ url('/backend/motor') }}" class="btn btn-outline-info">Kembali</a>
     </div>
         </form>
             </div>
